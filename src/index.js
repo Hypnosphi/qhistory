@@ -27,7 +27,16 @@ const qhistory = (history, stringify, parse) => {
     } else {
       location.query = {}
     }
-  }  
+  }
+
+  const updateProperties = (history) => {
+    const properties = ['location', 'length', 'entries', 'index']
+    properties.forEach(prop => {
+      if (history.hasOwnProperty(prop)) {
+        queryHistory[prop] = history[prop]
+      }
+    })
+  }
 
   // This relies on being the first listener called by
   // the actual history instance. If you register a
@@ -35,12 +44,15 @@ const qhistory = (history, stringify, parse) => {
   // it with qhistory, the location object will not have
   // the query property set on it when that listener
   // is called.
-  history.listen(addQuery)
+  history.listen((location) => {
+    addQuery(location)
+    updateProperties(history)
+  })
 
   // make sure that the initial location has query support
   addQuery(history.location)
 
-  return {
+  const queryHistory = {
     ...history,
     push: (location, state) => {
       addSearch(location)
@@ -55,6 +67,8 @@ const qhistory = (history, stringify, parse) => {
       return history.createHref(location)
     }
   }
+
+  return queryHistory
 }
 
 export default qhistory
