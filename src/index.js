@@ -16,7 +16,7 @@ const qhistory = (history, stringify, parse) => {
 
   const addSearch = (location) => {
     if (typeof location === 'object') {
-      location.search = location.query ? stringify(location.query) : ''
+      location.search = location.query ? stringify(location.query) : location.search || ''
     }
   }
 
@@ -30,7 +30,7 @@ const qhistory = (history, stringify, parse) => {
   }
 
   const updateProperties = (history) => {
-    const properties = ['location', 'length', 'entries', 'index']
+    const properties = ['location', 'length', 'entries', 'index', 'action']
     properties.forEach(prop => {
       if (history.hasOwnProperty(prop)) {
         queryHistory[prop] = history[prop]
