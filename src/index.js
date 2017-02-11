@@ -21,7 +21,12 @@ const qhistory = (history, stringify, parse) => {
   }
 
   const addQuery = (location) => {
-    location.query = location.search ? parse(location.search) : {}
+    const { search } = location
+    if (search) {
+      location.query = parse(search.charAt(0) === '?' ? search.substring(1) : search)
+    } else {
+      location.query = {}
+    }
   }  
 
   // This relies on being the first listener called by
