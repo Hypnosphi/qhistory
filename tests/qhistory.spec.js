@@ -3,6 +3,22 @@ import { createMemoryHistory } from 'history'
 import { stringify, parse } from 'qs'
 
 describe('qhistory', () => {
+  describe('stringify & parse', () => {
+    it('throws error if stringify is not a function', () => {
+      const history = createMemoryHistory()
+      expect(() => {
+        const q = qhistory(history, undefined, parse)
+      }).toThrow()
+    })
+
+    it('throws error if parse is not a function', () => {
+      const history = createMemoryHistory()
+      expect(() => {
+        const q = qhistory(history, stringify, undefined)
+      }).toThrow()
+    })
+  })
+
   describe('query', () => {
     it('will be present on initial location', () => {
       const history = createMemoryHistory({
