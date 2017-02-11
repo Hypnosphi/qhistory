@@ -1,0 +1,9 @@
+{
+  "presets": [
+    "./config/buildPreset"
+  ],
+  "plugins": [
+    "transform-export-extensions",
+    "transform-object-rest-spread"
+  ]
+}
