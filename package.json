@@ -1,0 +1,34 @@
+{
+  "name": "qhistory",
+  "version": "0.1.0",
+  "description": "Wrap history with query support",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pshrmn/qhistory.git"
+  },
+  "keywords": [
+    "history",
+    "query",
+    "search"
+  ],
+  "author": "Paul Sherman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pshrmn/qhistory/issues"
+  },
+  "homepage": "https://github.com/pshrmn/qhistory#readme",
+  "peerDependencies": {
+    "history": ">=4.0.0"
+  },
+  "dependencies": {
+    "invariant": "^2.2.2"
+  },
+  "devDependencies": {
+    "history": "^4.5.1",
+    "jest": "^18.1.0"
+  }
+}
