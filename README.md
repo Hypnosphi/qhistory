@@ -1,4 +1,4 @@
-# Q History
+# qhistory
 
 Add query object support to [`history`](https://github.com/ReactTraining/history) library location objects.
 
