@@ -2,7 +2,7 @@
 
 Add query object support to [`history`](https://github.com/ReactTraining/history) library location objects.
 
-You will need to supply `stringify` and `parse` methods. 
+You will need to supply `stringify` and `parse` methods.
 
 #### `stringify`
 
@@ -71,4 +71,37 @@ render((
     <App />
   </Router>
 ), document.getElementById('root'))
+```
+
+#### If you're using React Router 4's BrowserRouter you can incorporate qhistory like this:
+
+```js
+class QueryRouter extends React.Component {
+  static propTypes = {
+    basename: PropTypes.string,
+    forceRefresh: PropTypes.bool,
+    getUserConfirmation: PropTypes.func,
+    keyLength: PropTypes.number,
+    children: PropTypes.node,
+    stringify: PropTypes.func,
+    parse: PropTypes.func,
+  }
+
+  history = qhistory(
+    createBrowserHistory(this.props),
+    this.props.stringify,
+    this.props.parse
+  )
+
+  render() {
+    return <Router history={this.history} children={this.props.children} />
+  }
+}
+
+// usage
+render((
+  <QueryRouter stringify={stringify} parse={parse}>
+    <App />
+  </QueryRouter>
+), document.getElementbyId('root'))
 ```
