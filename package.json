@@ -1,6 +1,6 @@
 {
   "name": "qhistory",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wrap history with query support",
   "main": "lib/index.js",
   "module": "es/index.js",
