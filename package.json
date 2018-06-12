@@ -1,6 +1,6 @@
 {
   "name": "qhistory",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Wrap history with query support",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -9,7 +9,8 @@
     "umd",
     "es",
     "LICENSE",
-    "*.md"
+    "*.md",
+    "index.d.ts"
   ],
   "scripts": {
     "prebuild": "rimraf lib umd es",
