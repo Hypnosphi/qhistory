@@ -16,21 +16,30 @@ const qhistory = (history, stringify, parse) => {
 
   const addSearch = (location) => {
     if (typeof location === 'object') {
-      location.search = location.query ? stringify(location.query) : location.search || ''
+      let search = location.search || ''
+      if (location.query) {
+        search = stringify(location.query)
+        // Ensure leading "?" for non-empty search
+        if (search.length > 0 && search.charAt(0) !== '?') {
+          search = `?${search}`
+        }
+      }
+      return {...location, search}
     }
+
+    return location
   }
 
   const addQuery = (location) => {
     const { search } = location
-    if (search) {
-      location.query = parse(search.charAt(0) === '?' ? search.substring(1) : search)
-    } else {
-      location.query = {}
+    return {
+      ...location,
+      query: search ? parse(search.charAt(0) === '?' ? search.substring(1) : search) : {}
     }
   }
 
   const updateProperties = (history) => {
-    const properties = ['location', 'length', 'entries', 'index', 'action']
+    const properties = ['length', 'entries', 'index', 'action']
     properties.forEach(prop => {
       if (history.hasOwnProperty(prop)) {
         queryHistory[prop] = history[prop]
@@ -45,7 +54,6 @@ const qhistory = (history, stringify, parse) => {
   // the query property set on it when that listener
   // is called.
   history.listen((location) => {
-    addQuery(location)
     updateProperties(history)
   })
 
@@ -54,18 +62,25 @@ const qhistory = (history, stringify, parse) => {
 
   const queryHistory = {
     ...history,
-    push: (location, state) => {
-      addSearch(location)
-      history.push(location, state)
+    get location() {
+      return addQuery(history.location)
     },
-    replace: (location, state) => {
-      addSearch(location)
-      history.replace(location, state)
-    },
-    createHref: (location) => {
-      addSearch(location)
-      return history.createHref(location)
-    }
+    listen: (listener) =>
+      history.listen((location, action) => {
+        const isV5 = location.location != null
+        if (isV5) {
+          action = location.action
+          location = location.location
+        }
+        const queryLocation = addQuery(location)
+        isV5 ? listener({location: queryLocation, action}) : listener(queryLocation, action)
+      }),
+    push: (location, state) =>
+      history.push(addSearch(location), state),
+    replace: (location, state) =>
+      history.replace(addSearch(location), state),
+    createHref: (location) =>
+      history.createHref(addSearch(location))
   }
 
   return queryHistory
