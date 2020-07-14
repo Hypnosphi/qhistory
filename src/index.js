@@ -57,14 +57,8 @@ const qhistory = (history, stringify, parse) => {
     updateProperties(history)
   })
 
-  // make sure that the initial location has query support
-  addQuery(history.location)
-
   const queryHistory = {
     ...history,
-    get location() {
-      return addQuery(history.location)
-    },
     listen: (listener) =>
       history.listen((location, action) => {
         const isV5 = location.location != null
@@ -82,6 +76,10 @@ const qhistory = (history, stringify, parse) => {
     createHref: (location) =>
       history.createHref(addSearch(location))
   }
+
+  Object.defineProperty(queryHistory, 'location', {
+    get: () => addQuery(history.location),
+  })
 
   return queryHistory
 }

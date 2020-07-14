@@ -34,7 +34,9 @@ describe('qhistory', () => {
 
       q.listen(({location}) => {
         expect(location.query).toEqual({ tooGoodToBe: 'true' })
+        expect(q.location.query).toEqual({ tooGoodToBe: 'true' })
         expect(location.search).toBe('?tooGoodToBe=true')
+        expect(q.location.search).toBe('?tooGoodToBe=true')
       })
 
       q.push('/test?tooGoodToBe=true')
