@@ -32,9 +32,11 @@ describe('qhistory', () => {
       const history = createMemoryHistory()
       const q = qhistory(history, stringify, parse)
 
-      q.listen((location) => {
+      q.listen(({location}) => {
         expect(location.query).toEqual({ tooGoodToBe: 'true' })
+        expect(q.location.query).toEqual({ tooGoodToBe: 'true' })
         expect(location.search).toBe('?tooGoodToBe=true')
+        expect(q.location.search).toBe('?tooGoodToBe=true')
       })
 
       q.push('/test?tooGoodToBe=true')
@@ -44,7 +46,7 @@ describe('qhistory', () => {
       const history = createMemoryHistory()
       const q = qhistory(history, stringify, parse)
 
-      q.listen((location) => {
+      q.listen(({location}) => {
         expect(location.query).toBeInstanceOf(Object)
         expect(Object.keys(location.query).length).toBe(0)
       })
@@ -56,41 +58,41 @@ describe('qhistory', () => {
   describe('search', () => {
     it('will prefer query object over search string', () => {
       const history = createMemoryHistory()
+      history.push = jest.fn();
       const q = qhistory(history, stringify, parse)
 
       q.push({ pathname: '/somewhere',
         search: '?overRainbow=false',
         query: { overRainbow: true }
       })
-      const mostRecentLocation = q.entries[q.entries.length-1]
-      expect(mostRecentLocation.search).toBe('?overRainbow=true')
+      expect(history.push).toHaveBeenCalledWith(expect.objectContaining({search: '?overRainbow=true'}), undefined)
     })
 
     it('uses search if no query provided', () => {
       const history = createMemoryHistory()
+      history.push = jest.fn();
       const q = qhistory(history, stringify, parse)
       q.push({ pathname: '/somewhere', search: '?overRainbow=false' })
-      const mostRecentLocation = q.entries[q.entries.length-1]
-      expect(mostRecentLocation.search).toBe('?overRainbow=false')
+      expect(history.push).toHaveBeenCalledWith(expect.objectContaining({search: '?overRainbow=false'}), undefined)
     })
 
     it('sets search to empty string if no query/search', () => {
       const history = createMemoryHistory()
+      history.push = jest.fn();
       const q = qhistory(history, stringify, parse)
       q.push({ pathname: '/somewhere' })
-      const mostRecentLocation = q.entries[q.entries.length-1]
-      expect(mostRecentLocation.search).toBe('')
+      expect(history.push).toHaveBeenCalledWith(expect.objectContaining({search: ''}), undefined)
     })
   })
 
   describe('push', () => {
     it('will set search string for location passed to actual history', () => {
       const history = createMemoryHistory()
+      history.push = jest.fn();
       const q = qhistory(history, stringify, parse)
 
       q.push({ pathname: '/somewhere', query: { overRainbow: true }})
-      const mostRecentLocation = q.entries[q.entries.length-1]
-      expect(mostRecentLocation.search).toBe('?overRainbow=true')
+      expect(history.push).toHaveBeenCalledWith(expect.objectContaining({search: '?overRainbow=true'}), undefined)
     })
 
     it('will call the history instance\'s push method', () => {
@@ -105,23 +107,20 @@ describe('qhistory', () => {
   describe('replace', () => {
     it('will set search string for location passed to actual history', () => {
       const history = createMemoryHistory()
+      history.replace = jest.fn();
       const q = qhistory(history, stringify, parse)
 
-      expect(q.length).toBe(1)
       q.replace({ pathname: '/somewhere', query: { overRainbow: true }})
-      const mostRecentLocation = q.entries[q.entries.length-1]
-      expect(mostRecentLocation.search).toBe('?overRainbow=true')
+      expect(history.replace).toHaveBeenCalledWith(expect.objectContaining({search: '?overRainbow=true'}), undefined)
     })
 
     it('will call the history instance\'s replace method', () => {
       const history = createMemoryHistory()
+      history.replace = jest.fn();
       const q = qhistory(history, stringify, parse)
 
-      expect(q.length).toBe(1)
       q.replace({ pathname: '/somewhere', query: { overRainbow: true }})
-      // test length to ensure replace was called
-      expect(q.length).toBe(1)
-      expect(q.action).toBe('REPLACE')
+      expect(history.replace).toHaveBeenCalled()
     })
   })
 
